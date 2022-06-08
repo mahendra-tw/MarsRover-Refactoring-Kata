@@ -15,33 +15,51 @@ public class MarsRover {
     }
 
     private void turnRoverLeft() {
-        if (this.direction == 'N') {
-            this.direction = 'W';
-        } else if (direction == 'W') {
-            this.direction = 'S';
-        } else if (direction == 'S') {
-            this.direction = 'E';
-        } else this.direction = 'N';
+        switch (this.direction) {
+            case 'N':
+                this.direction = 'W';
+                break;
+            case 'W':
+                this.direction = 'S';
+                break;
+            case 'S':
+                this.direction = 'E';
+                break;
+            default:
+                this.direction = 'N';
+        }
     }
 
     private void turnRoverRight() {
-        if (direction == 'N') {
-            this.direction = 'E';
-        } else if (direction == 'W') {
-            this.direction = 'N';
-        } else if (direction == 'S') {
-            this.direction = 'W';
-        } else this.direction = 'S';
+        switch (this.direction) {
+            case 'N':
+                this.direction = 'E';
+                break;
+            case 'W':
+                this.direction = 'N';
+                break;
+            case 'S':
+                this.direction = 'W';
+                break;
+            default:
+                this.direction = 'S';
+        }
     }
 
     private void moveRover() {
-        if (direction == 'N') {
-            this.yCoordinate += 1;
-        } else if (direction == 'S') {
-            this.yCoordinate -= 1;
-        } else if (direction == 'W') {
-            this.xCoordinate -= 1;
-        } else this.xCoordinate += 1;
+        switch (this.direction) {
+            case 'N':
+                this.yCoordinate += 1;
+                break;
+            case 'W':
+                this.xCoordinate -= 1;
+                break;
+            case 'S':
+                this.yCoordinate -= 1;
+                break;
+            default:
+                this.xCoordinate += 1;
+        }
     }
 
     public String relocate(String instructions) {
