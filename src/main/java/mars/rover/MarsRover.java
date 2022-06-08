@@ -1,51 +1,60 @@
 package mars.rover;
 
+import java.util.stream.IntStream;
+
 public class MarsRover {
 
-    private static String turnLeft(int x, int y, char direction, String instructions) {
-        if (direction == 'N') {
-            return move(x, y, 'W', instructions.substring(1, instructions.length()));
-        } else if (direction == 'W') {
-            return move(x, y, 'S', instructions.substring(1, instructions.length()));
-        } else if (direction == 'S') {
-            return move(x, y, 'E', instructions.substring(1, instructions.length()));
-        }
-        return move(x, y, 'N', instructions.substring(1, instructions.length()));
+    private int xCoordinate;
+    private int yCoordinate;
+    private char direction;
+
+    public MarsRover(int xCoordinate, int yCoordinate, char direction) {
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+        this.direction = direction;
     }
 
-    private static String turnRight(int x, int y, char direction, String instructions) {
-        if (direction == 'N') {
-            return move(x, y, 'E', instructions.substring(1, instructions.length()));
+    private void turnRoverLeft() {
+        if (this.direction == 'N') {
+            this.direction = 'W';
         } else if (direction == 'W') {
-            return move(x, y, 'N', instructions.substring(1, instructions.length()));
+            this.direction = 'S';
         } else if (direction == 'S') {
-            return move(x, y, 'W', instructions.substring(1, instructions.length()));
-        }
-        return move(x, y, 'S', instructions.substring(1, instructions.length()));
+            this.direction = 'E';
+        } else this.direction = 'N';
     }
 
-    private static String moveOneStep(int x, int y, char direction, String instructions) {
+    private void turnRoverRight() {
         if (direction == 'N') {
-            return move(x, y + 1, 'N', instructions.substring(1, instructions.length()));
-        } else if (direction == 'S') {
-            return move(x, y - 1, 'S', instructions.substring(1, instructions.length()));
+            this.direction = 'E';
         } else if (direction == 'W') {
-            return move(x - 1, y, 'W', instructions.substring(1, instructions.length()));
-        }
-        return move(x + 1, y, 'E', instructions.substring(1, instructions.length()));
+            this.direction = 'N';
+        } else if (direction == 'S') {
+            this.direction = 'W';
+        } else this.direction = 'S';
     }
 
-    public static String move(int x, int y, char direction, String instructions) {
-        if (!instructions.isEmpty()) {
-            char instruction = instructions.charAt(0);
+    private void moveRover() {
+        if (direction == 'N') {
+            this.yCoordinate += 1;
+        } else if (direction == 'S') {
+            this.yCoordinate -= 1;
+        } else if (direction == 'W') {
+            this.xCoordinate -= 1;
+        } else this.xCoordinate += 1;
+    }
+
+    public String relocate(String instructions) {
+        IntStream.range(0, instructions.length()).forEach(iterator -> {
+            char instruction = instructions.charAt(iterator);
             if (instruction == 'L') {
-                return turnLeft(x, y, direction, instructions);
+                turnRoverLeft();
             } else if (instruction == 'R') {
-                return turnRight(x, y, direction, instructions);
-            } else if (instruction == 'M') {
-                return moveOneStep(x, y, direction, instructions);
+                turnRoverRight();
+            } else {
+                moveRover();
             }
-        }
-        return x + " " + y + " " + direction;
+        });
+        return this.xCoordinate + " " + this.yCoordinate + " " + this.direction;
     }
 }
