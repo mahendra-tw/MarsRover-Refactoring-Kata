@@ -1,5 +1,7 @@
 package mars.rover;
 
+import mars.rover.exceptions.RoverOutOfBoundaryException;
+
 import java.util.stream.IntStream;
 
 public class MarsRover {
@@ -46,23 +48,41 @@ public class MarsRover {
         }
     }
 
-    private void moveRover() {
-        switch (this.direction) {
-            case 'N':
-                this.yCoordinate += 1;
-                break;
-            case 'W':
-                this.xCoordinate -= 1;
-                break;
-            case 'S':
-                this.yCoordinate -= 1;
-                break;
-            default:
-                this.xCoordinate += 1;
+    private void moveRover(Plateau plateau) throws RoverOutOfBoundaryException {
+        {
+            switch (this.direction) {
+                case 'N':
+                    this.yCoordinate += 1;
+                    if (plateau.isOutOfBoundary(this.xCoordinate, this.yCoordinate)) {
+                        this.yCoordinate -= 1;
+                        throw new RoverOutOfBoundaryException("");
+                    }
+                    break;
+                case 'W':
+                    this.xCoordinate -= 1;
+                    if (plateau.isOutOfBoundary(this.xCoordinate, this.yCoordinate)) {
+                        this.xCoordinate += 1;
+                        throw new RoverOutOfBoundaryException("");
+                    }
+                    break;
+                case 'S':
+                    this.yCoordinate -= 1;
+                    if (plateau.isOutOfBoundary(this.xCoordinate, this.yCoordinate)) {
+                        this.yCoordinate += 1;
+                        throw new RoverOutOfBoundaryException("");
+                    }
+                    break;
+                default:
+                    this.xCoordinate += 1;
+                    if (plateau.isOutOfBoundary(this.xCoordinate, this.yCoordinate)) {
+                        xCoordinate -= 1;
+                        throw new RoverOutOfBoundaryException("");
+                    }
+            }
         }
     }
 
-    public String relocate(String instructions) {
+    public String relocate(String instructions, Plateau plateau) throws RoverOutOfBoundaryException {
         IntStream.range(0, instructions.length()).forEach(iterator -> {
             char instruction = instructions.charAt(iterator);
             if (instruction == 'L') {
@@ -70,7 +90,11 @@ public class MarsRover {
             } else if (instruction == 'R') {
                 turnRoverRight();
             } else {
-                moveRover();
+                try {
+                    moveRover(plateau);
+                } catch (RoverOutOfBoundaryException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         return this.xCoordinate + " " + this.yCoordinate + " " + this.direction;
